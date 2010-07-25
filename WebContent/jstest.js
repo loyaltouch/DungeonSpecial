@@ -114,14 +114,15 @@ function initParty(){
 		root.party.push(popArray(root.members));
 	}
 }
-function initEnconter(){
-	http://download.eclipse.org/egit/updateshttp://download.eclipse.org/egit/updateshttp://download.eclipse.org/egit/updateshttp://download.eclipse.org/egit/updates
+function initEncounter(){
+	parseTable(root.enemyTable, encounterTable, Object);
 }
 function init(){
 	initRoot();
 	initItem();
 	initMember();
 	initParty();
+	initEncounter();
 	lines[0] = root.party[0].名前;
 	lines[1] = root.party[1].名前;
 	lines[2] = root.party[2].名前;
@@ -145,7 +146,10 @@ function roledd(){
 	return Math.floor(Math.random() * 6 + 1) + Math.floor(Math.random() * 6 + 1);
 }
 function encounter(){
-
+	var enemy = peekArray(root.enemyTable);
+	var maxLen = enemy.遭遇数;
+	var enemyLen = Math.floor(Math.random() * maxLen) + 1;
+	lines[3] = enemy.名前 + " が現れた！ ×" + enemyLen;
 }
 // ----------------------------------------------------------------//
 function draw() {
@@ -190,5 +194,6 @@ function draw() {
 //----------------------------------------------------------------//
 function test(){
 	draw();
+	encounter();
 }
 init();
