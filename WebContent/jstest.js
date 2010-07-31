@@ -48,7 +48,7 @@ function aryIndexOf(ary, name){
 // ----------------------------------------------------------------//
 // ゲームデータ
 var memberTable = [
-	["名前", "HP", "MP", "攻撃力", "防御力", "素早さ"],
+	["名前", "最大HP", "最大MP", "攻撃力", "防御力", "素早さ"],
 	["マリスター", 20, 12, 10, 10, 10],
 	["マサムネ", 18, 5, 12, 6, 13],
 	["ティアミス", 15, 15, 14, 14, 13],
@@ -92,6 +92,8 @@ function initRoot(){
 	};
 }
 function Member(){
+	this.hp = 1;
+	this.mp = 0;
 	this.装備 = {
 		武器: root.items.素手,
 		防具: root.items.無装備
@@ -102,6 +104,10 @@ function Member(){
 	this.getDfn = function(){
 		return this.防御力 + this.装備.防具.値;
 	};
+	this.inn = function(){
+		this.hp = this.最大HP;
+		this.mp = this.最大MP;
+	}
 }
 function initItem(){
 	parseTable(root.items, itemTable, Object);
@@ -151,12 +157,17 @@ function encounter(){
 	var enemyLen = Math.floor(Math.random() * maxLen) + 1;
 	lines[3] = enemy.名前 + " が現れた！ ×" + enemyLen;
 }
+function inn(){
+	for(var i = 0; i < 4; i++){
+		root.party[i].inn();
+	}
+}
 // ----------------------------------------------------------------//
 function draw() {
 	/* canvas要素のノードオブジェクト */
 	/* canvas要素の存在チェックとCanvas未対応ブラウザの対処 */
 	/* 2Dコンテキスト */
-	if(g == undefined){
+	if(g == null){
 		var canvas = document.getElementById('canvas');
 		if(!canvas || !canvas.getContext){ return false; }
 		g = canvas.getContext('2d');
@@ -166,7 +177,7 @@ function draw() {
 	g.fillStyle = "#000000";
 	g.fillRect(0, 0, 640, 480);
 
-	if(wnd == undefined){
+	if(wnd == null){
 		wnd = new Image();
 		wnd.src = "window.png";
 		wnd.onload = function(){
