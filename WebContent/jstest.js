@@ -74,7 +74,7 @@ var encounterTable = [
 ];
 var menuTable = [
     ["名前", "実行"],
-    ["キャンプ", "alert(1)"],
+    ["キャンプ", "camp()"],
     ["移動", "move()"],
     ["システム", "system()"],
     ["戻る", "ret()"],
@@ -84,6 +84,7 @@ var menuTable = [
 var root = {};
 function initRoot(){
 	root.menu = [];
+	root.args = [];
 	root.members = [];
 	root.party = [];
 	root.enemy = [];
@@ -91,10 +92,9 @@ function initRoot(){
 	root.floors = [];
 	root.maze = [];
 	root.enemyTable = [];
+	root.selects = [];
 	root.message = "";
 	root.inited = true;
-	root.x = 3;
-	root.y = 6;
 }
 function Member(){
 	this.hp = 1;
@@ -116,6 +116,12 @@ function Member(){
 }
 function initMenu(){
 	parseTable(root.menu, menuTable, Object);
+}
+function initArgs(){
+	for(var i = 0; i < 8; i++){
+		root.args[i] = "";
+	}
+	root.args.current = 0;
 }
 function initItem(){
 	parseTable(root.items, itemTable, Object);
@@ -148,10 +154,18 @@ function initMaze(){
 		}
 		root.maze.push(mazeLine);
 	}
+	root.maze.x = 3;
+	root.maze.y = 6;
+}
+function initSelects(){
+	for(var i = 0; i < 4; i++){
+		root.selects[i] = "";
+	}
 }
 function init(){
 	initRoot();
 	initMenu();
+	initArgs();
 	initItem();
 	initMember();
 	initParty();
@@ -200,19 +214,22 @@ function selectList(ary){
 		}else if(ary[i] != 0){
 			label = ary[i];
 		}
-		
+
 		if(label == ""){
+			root.selects[i] = "";
 			lines[i] = "";
 		}else{
+			root.selects[i] = label;
 			lines[i] = (i + 1) + ": " + label;
 		}
 	}
 }
 function camp(){
+	root.args[0] = "メニュー";
 	selectList(root.party);
 }
 function checkFloor(){
-	
+
 }
 // ----------------------------------------------------------------//
 function draw() {
@@ -228,7 +245,7 @@ function draw() {
 	/* 四角を描く */
 	g.fillStyle = "#000000";
 	g.fillRect(0, 0, 640, 480);
-	
+
 	/* フロアを描く */
 	for(var j = 0; j < 7; j++){
 		for(var i = 0; i < 7; i++){
@@ -270,11 +287,12 @@ function draw() {
 }
 //----------------------------------------------------------------//
 function test(){
-	root.maze[root.y][root.x] = root.floors[0];
+	root.maze[root.maze.y][root.maze.x] = root.floors[0];
 	draw();
 }
 function select(sel){
-	eval(root.menu[sel - 1]);
+	root.args[root.args.current] = root.selects[sel];
+	eval(root.menu[root.args[0]].実行);
 	draw();
 }
 init();
