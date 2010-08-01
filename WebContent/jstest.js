@@ -72,24 +72,29 @@ var encounterTable = [
     ["ドラゴン", 4],
     ["ヴァンパイア", 7],
 ];
+var menuTable = [
+    ["名前", "実行"],
+    ["キャンプ", "alert(1)"],
+    ["移動", "move()"],
+    ["システム", "system()"],
+    ["戻る", "ret()"],
+];
 // ----------------------------------------------------------------//
 // ゲームデータ用ユーティリティ
 var root = {};
 function initRoot(){
+	root.menu = [];
 	root.members = [];
 	root.party = [];
 	root.enemy = [];
 	root.items = [];
 	root.floors = [];
+	root.maze = [];
 	root.enemyTable = [];
 	root.message = "";
 	root.inited = true;
-
-	var field = {};
-	field.名前 = "S1";
-	field.processField = function(){
-
-	};
+	root.x = 3;
+	root.y = 6;
 }
 function Member(){
 	this.hp = 1;
@@ -109,6 +114,9 @@ function Member(){
 		this.mp = this.最大MP;
 	}
 }
+function initMenu(){
+	parseTable(root.menu, menuTable, Object);
+}
 function initItem(){
 	parseTable(root.items, itemTable, Object);
 }
@@ -123,16 +131,35 @@ function initParty(){
 function initEncounter(){
 	parseTable(root.enemyTable, encounterTable, Object);
 }
+function initFloors(){
+	var floor = {};
+	floor.名前 = "S1";
+	floor.processField = function(){
+		encounter();
+	};
+	floor.icon = "enemy";
+	root.floors.push(floor);
+}
+function initMaze(){
+	for(var i = 0; i < 7; i++){
+		var mazeLine = [];
+		for(var j = 0; j < 7; j++){
+			mazeLine.push(0);
+		}
+		root.maze.push(mazeLine);
+	}
+}
 function init(){
 	initRoot();
+	initMenu();
 	initItem();
 	initMember();
 	initParty();
 	initEncounter();
-	lines[0] = root.party[0].名前;
-	lines[1] = root.party[1].名前;
-	lines[2] = root.party[2].名前;
-	lines[3] = root.party[3].名前;
+	initFloors();
+	initMaze();
+
+	selectList(root.menu);
 }
 // ----------------------------------------------------------------//
 // ゲームシステム
@@ -159,8 +186,33 @@ function encounter(){
 }
 function inn(){
 	for(var i = 0; i < 4; i++){
-		root.party[i].inn();
+		try{
+			root.party[i].inn();
+		}catch(e){
+		}
 	}
+}
+function selectList(ary){
+	for(var i = 0; i < 4; i++){
+		var label = "";
+		if(ary[i].名前){
+			label = ary[i].名前;
+		}else if(ary[i] != 0){
+			label = ary[i];
+		}
+		
+		if(label == ""){
+			lines[i] = "";
+		}else{
+			lines[i] = (i + 1) + ": " + label;
+		}
+	}
+}
+function camp(){
+	selectList(root.party);
+}
+function checkFloor(){
+	
 }
 // ----------------------------------------------------------------//
 function draw() {
@@ -176,6 +228,20 @@ function draw() {
 	/* 四角を描く */
 	g.fillStyle = "#000000";
 	g.fillRect(0, 0, 640, 480);
+	
+	/* フロアを描く */
+	for(var j = 0; j < 7; j++){
+		for(var i = 0; i < 7; i++){
+			var floor = root.maze[j][i];
+			if(!floor.icon){
+				g.strokeStyle = "#ffffff";
+				g.strokeRect(i * 64, j * 64, 60, 60);
+			}else if(floor.icon = "enemy"){
+				g.fillStyle = "#ff0000";
+				g.fillRect(i * 64, j * 64, 60, 60);
+			}
+		}
+	}
 
 	if(wnd == null){
 		wnd = new Image();
@@ -204,7 +270,11 @@ function draw() {
 }
 //----------------------------------------------------------------//
 function test(){
+	root.maze[root.y][root.x] = root.floors[0];
 	draw();
-	encounter();
+}
+function select(sel){
+	eval(root.menu[sel - 1]);
+	draw();
 }
 init();
