@@ -1,5 +1,6 @@
 var g;
 var wnd;
+var floor1;
 var lines = [];
 var pages = [];
 // ----------------------------------------------------------------//
@@ -143,7 +144,7 @@ function initFloors(){
 	floor.processField = function(){
 		encounter();
 	};
-	floor.icon = "enemy";
+	floor.icon = "floor1.png";
 	root.floors.push(floor);
 }
 function initMaze(){
@@ -246,6 +247,24 @@ function draw() {
 	g.fillStyle = "#000000";
 	g.fillRect(0, 0, 640, 480);
 
+	if(wnd == null){
+		wnd = new Image();
+		wnd.src = "window.png";
+		wnd.onload = function(){
+			this.loaded = true;
+			draw();
+			return;
+		};
+	}
+	if(floor1 == null){
+		floor1 = new Image();
+		floor1.src = "floor1.png";
+		floor1.onload = function(){
+			draw();
+			return;
+		}
+	}
+
 	/* フロアを描く */
 	for(var j = 0; j < 7; j++){
 		for(var i = 0; i < 7; i++){
@@ -253,20 +272,10 @@ function draw() {
 			if(!floor.icon){
 				g.strokeStyle = "#ffffff";
 				g.strokeRect(i * 64, j * 64, 60, 60);
-			}else if(floor.icon = "enemy"){
-				g.fillStyle = "#ff0000";
-				g.fillRect(i * 64, j * 64, 60, 60);
+			}else if(floor.icon = "floor1.png"){
+				g.drawImage(floor1, i * 64, j * 64);
 			}
 		}
-	}
-
-	if(wnd == null){
-		wnd = new Image();
-		wnd.src = "window.png";
-		wnd.onload = function(){
-			this.loaded = true;
-			draw();
-		};
 	}
 
 	if(wnd.loaded){
@@ -291,7 +300,7 @@ function test(){
 	draw();
 }
 function select(sel){
-	root.args[root.args.current] = root.selects[sel];
+	root.args[root.args.current] = root.selects[sel - 1];
 	eval(root.menu[root.args[0]].実行);
 	draw();
 }
