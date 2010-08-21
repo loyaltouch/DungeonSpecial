@@ -1,6 +1,7 @@
 var g;
 var wnd;
 var floor1;
+var icons = {};
 var lines = [];
 var pages = [];
 // ----------------------------------------------------------------//
@@ -113,7 +114,7 @@ function Member(){
 	this.inn = function(){
 		this.hp = this.最大HP;
 		this.mp = this.最大MP;
-	}
+	};
 }
 function initMenu(){
 	parseTable(root.menu, menuTable, Object);
@@ -144,7 +145,21 @@ function initFloors(){
 	floor.processField = function(){
 		encounter();
 	};
-	floor.icon = "floor1.png";
+	floor.icon = "floor1";
+	root.floors.push(floor);
+	floor = {};
+	floor.名前 = "S2";
+	floor.processField = function(){
+		encounter();
+	};
+	floor.icon = "floor2";
+	root.floors.push(floor);
+	floor = {};
+	floor.名前 = "S3";
+	floor.processField = function(){
+		encounter();
+	};
+	floor.icon = "izumi";
 	root.floors.push(floor);
 }
 function initMaze(){
@@ -229,6 +244,9 @@ function camp(){
 	root.args[0] = "メニュー";
 	selectList(root.party);
 }
+function status(){
+	selectList(["特技1", "特技2", "戻る"]);
+}
 function checkFloor(){
 
 }
@@ -250,19 +268,22 @@ function draw() {
 	if(wnd == null){
 		wnd = new Image();
 		wnd.src = "window.png";
-		wnd.onload = function(){
-			this.loaded = true;
-			draw();
-			return;
-		};
+		wnd.onload = load_complete;
 	}
-	if(floor1 == null){
-		floor1 = new Image();
-		floor1.src = "floor1.png";
-		floor1.onload = function(){
-			draw();
-			return;
-		}
+	if(icons.floor1 == null){
+		icons.floor1 = new Image();
+		icons.floor1.src = "floor1.png";
+		icons.floor1.onload = load_complete;
+	}
+	if(icons.floor2 == null){
+		icons.floor2 = new Image();
+		icons.floor2.src = "floor2.png";
+		icons.floor2.onload = load_complete;
+	}
+	if(icons.izumi == null){
+		icons.izumi = new Image();
+		icons.izumi.src = "izumi.png";
+		icons.izumi.onload = load_complete;
 	}
 
 	/* フロアを描く */
@@ -272,8 +293,10 @@ function draw() {
 			if(!floor.icon){
 				g.strokeStyle = "#ffffff";
 				g.strokeRect(i * 64, j * 64, 60, 60);
-			}else if(floor.icon = "floor1.png"){
-				g.drawImage(floor1, i * 64, j * 64);
+			}else{
+				if(icons[floor.icon] && icons[floor.icon].loaded){
+					g.drawImage(icons[floor.icon], i * 64, j * 64);
+				}
 			}
 		}
 	}
@@ -297,11 +320,18 @@ function draw() {
 //----------------------------------------------------------------//
 function test(){
 	root.maze[root.maze.y][root.maze.x] = root.floors[0];
+	root.maze[4][6] = root.floors[1];
+	root.maze[2][2] = root.floors[2];
 	draw();
 }
 function select(sel){
 	root.args[root.args.current] = root.selects[sel - 1];
 	eval(root.menu[root.args[0]].実行);
 	draw();
+}
+function load_complete(){
+	this.loaded = true;
+	draw();
+	return;
 }
 init();
