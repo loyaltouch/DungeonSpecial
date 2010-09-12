@@ -77,7 +77,7 @@ var encounterTable = [
 var menuTable = [
     ["名前", "実行"],
     ["キャンプ", "camp()"],
-    ["移動", "move()"],
+    ["移動", "direction()"],
     ["システム", "system()"],
     ["戻る", "ret()"],
 ];
@@ -124,6 +124,7 @@ function initArgs(){
 		root.args[i] = "";
 	}
 	root.args.current = 0;
+	selectList(root.menu);
 }
 function initItem(){
 	parseTable(root.items, itemTable, Object);
@@ -189,7 +190,7 @@ function init(){
 	initFloors();
 	initMaze();
 
-	selectList(root.menu);
+	//selectList(root.menu);
 }
 // ----------------------------------------------------------------//
 // ゲームシステム
@@ -246,6 +247,44 @@ function camp(){
 }
 function status(){
 	selectList(["特技1", "特技2", "戻る"]);
+}
+function direction(){
+	if(root.args[1] == "北"){
+		root.maze.y--;
+	}
+	if(root.args[1] == "東"){
+		root.maze.x++;
+	}
+	if(root.args[1] == "南"){
+		root.maze.y++;
+	}
+	if(root.args[1] == "西"){
+		root.maze.x--;
+	}
+	if(root.args[1] != ""){
+		var floor = root.maze[root.maze.y][root.maze.x];
+		if(floor == 0){
+			floor = root.floors[Math.floor(Math.random() * root.floors.length)];
+			root.maze[root.maze.y][root.maze.x] = floor;
+		}
+		initArgs();
+		draw();
+	}else{
+		var select = [];
+		if(root.maze.y > 0){
+			select.push("北");
+		}
+		if(root.maze.x < 7){
+			select.push("東");
+		}
+		if(root.maze.y < 7){
+			select.push("南");
+		}
+		if(root.maze.x > 0){
+			select.push("西");
+		}
+		selectList(select);
+	}
 }
 function checkFloor(){
 
@@ -326,6 +365,9 @@ function test(){
 }
 function select(sel){
 	root.args[root.args.current] = root.selects[sel - 1];
+	if(root.args.current < 8){
+		root.args.current++;
+	}
 	eval(root.menu[root.args[0]].実行);
 	draw();
 }
