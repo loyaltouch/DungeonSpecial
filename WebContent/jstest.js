@@ -249,18 +249,39 @@ function status(){
 	selectList(["特技1", "特技2", "戻る"]);
 }
 function direction(){
+	if(root.arge[1] != ""){
+		move();
+	}
+	/*
 	if(root.args[1] == "北"){
-		root.maze.y--;
+		if(root.maze.y > 0){
+			root.maze.y--;
+		}else{
+			root.args[1] = "";
+		}
 	}
 	if(root.args[1] == "東"){
-		root.maze.x++;
+		if(root.maze.x < 6){
+			root.maze.x++;
+		}else{
+			root.args[1] = "";
+		}
 	}
 	if(root.args[1] == "南"){
-		root.maze.y++;
+		if(root.maze.y < 6){
+			root.maze.y++;
+		}else{
+			root.args[1] = "";
+		}
 	}
 	if(root.args[1] == "西"){
-		root.maze.x--;
+		if(root.maze.x > 0){
+			root.maze.x--;
+		}else{
+			root.args[1] = "";
+		}
 	}
+	*/
 	if(root.args[1] != ""){
 		var floor = root.maze[root.maze.y][root.maze.x];
 		if(floor == 0){
@@ -271,6 +292,7 @@ function direction(){
 		draw();
 	}else{
 		var select = [];
+		alert(select.length);
 		if(root.maze.y > 0){
 			select.push("北");
 		}
@@ -285,6 +307,9 @@ function direction(){
 		}
 		selectList(select);
 	}
+}
+function move(){
+
 }
 function checkFloor(){
 
@@ -359,8 +384,6 @@ function draw() {
 //----------------------------------------------------------------//
 function test(){
 	root.maze[root.maze.y][root.maze.x] = root.floors[0];
-	root.maze[4][6] = root.floors[1];
-	root.maze[2][2] = root.floors[2];
 	draw();
 }
 function select(sel){

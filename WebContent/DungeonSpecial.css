@@ -1,0 +1,27 @@
+#mainWindow {
+	position:	relative;
+	width:	800;
+	height:	600;
+	border:	solid 1px #000000;
+}
+#canvas {
+	position:	absolute;
+	top: 0;
+	left: 0;
+}
+#mainMessage {
+	position:	absolute;
+	top:	300;
+	left:	4;
+	width:	784;
+	height:	268;
+	color:	#ffffff;
+	font-size:	20;
+	font-weight:	bold;
+	text-shadow: 2px 2px 5px #000000;
+	overflow: hidden;
+	background:	rgba(0, 128, 256, 0.5);
+	border:	solid 4px #0066ff;
+	border-radius:	10px;
+	-moz-border-radius:	10px;
+}http://f13.aaa.livedoor.jp/~finis/dunspe/DungeonSpecial.html
